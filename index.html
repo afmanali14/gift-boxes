@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Friendship Gifts</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
 body{
     margin:0;
     font-family:'Poppins',sans-serif;
     background: linear-gradient(135deg,#b8f1cc,#b3e5ff);
-    min-height:100vh;
-    overflow-x:hidden;
+    height:100vh;
+    overflow:hidden;
 }
 
 /* Gift area */
 #gifts{
     position:relative;
     width:100%;
-    height:100vh;
+    height:100%;
 }
 
+/* Gift box */
 .gift{
     position:absolute;
     font-size:48px;
@@ -63,6 +67,7 @@ body{
     border-radius:20px;
 }
 
+/* Return button */
 #returnBtn{
     position:fixed;
     bottom:20px;
@@ -74,179 +79,82 @@ body{
     color:white;
     font-size:14px;
     cursor:pointer;
+    display:none;
     z-index:6;
 }
-
-/* Admin panel */
-#adminBtn{
-    position:fixed;
-    top:15px;
-    right:15px;
-    background:#4caf50;
-    color:white;
-    border:none;
-    padding:8px 14px;
-    border-radius:20px;
-    cursor:pointer;
-    z-index:10;
-}
-
-#adminPanel{
-    position:fixed;
-    top:0;
-    right:-320px;
-    width:320px;
-    height:100%;
-    background:#ffffffee;
-    padding:15px;
-    overflow-y:auto;
-    transition:0.4s;
-    z-index:9;
-}
-
-#adminPanel.open{right:0;}
-
-#adminPanel h3{text-align:center;}
-
-#adminPanel input{
-    width:100%;
-    margin-bottom:8px;
-    padding:6px;
-}
-
-.admin-actions{
-    display:flex;
-    gap:10px;
-    margin-top:10px;
-}
-
-.admin-actions button{
-    flex:1;
-    padding:8px;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-}
-
-.saveBtn{background:#4caf50;color:white;}
-.closeBtn{background:#f44336;color:white;}
 </style>
 </head>
-<body>
 
-<button id="adminBtn">Admin</button>
+<body>
 
 <div id="gifts"></div>
 
 <div id="display">
-    <img id="displayImg" src="" />
+    <img id="displayImg">
     <div id="line"></div>
-    <button id="returnBtn">Return to unveil other gifts</button>
 </div>
 
-<div id="adminPanel">
-    <h3>Admin Panel</h3>
-    <p>Paste image URLs for each gift</p>
-    <div id="inputs"></div>
-    <div class="admin-actions">
-        <button class="saveBtn">Save</button>
-        <button class="closeBtn">Close</button>
-    </div>
-</div>
+<button id="returnBtn">Tap another gift 🎁</button>
 
 <script>
-const lines=[
-"Ajj tera yaadometer 98% te rukeya hoya... explain k eve kyu?? 😳🎀",
-"Aaaaaluuu is missing someone veryyyyyy much..... guess who? 🤭💛",
-"Dil kehnda: 'Go hug your Golgappa right now' , so sending you a warm virtual hug at 150km/h 🤗💖",
-"Warning: Aaalu's happiness increased when you tapped this 😄💚",
-"Your friend is 110% pagal about our friendship 🤪💚",
-"Dil di vibe keh rahi: You matter..... oh v bohooooot shaaara 🌿💛",
-"Iss saal ne ik cheez sikhayi- You're really really special to me 🩵✨",
-"Your smile is the real gift here. Always keep it 😊🎀",
-"I hope this surprise made your day a little better 🌸💖",
-"The world is softer and brighter with you in it ✨💙",
-"Thank you for being such a sweet, grounded, positive person 🌿🤍",
-"You're strong, kind, caring.... and that's rare, stay like that 🌸💛",
-"A little surprise...... for a person who truly deserves it 🎁💖",
-"You are someone who deserves all the lovely things in life ✨🤗",
-"And here's the last one... specially added because tu meri mostttt important friend hain 💛🎀"
+const giftsData = [
+ {img:"https://i.postimg.cc/Dyj5pz8F/Harman_5.jpg", line:"Ajj tera yaadometer 98% te rukeya hoya... explain k eve kyu?? 😳🎀"},
+ {img:"https://i.postimg.cc/RCJBBG33/missing_someone.png", line:"Aaaaaluuu is missing someone veryyyyyy much..... guess who? 🤭💛"},
+ {img:"https://i.postimg.cc/GhM95q68/aloo_hugging_golgappa.jpg", line:"Dil kehnda: 'Go hug your Golgappa right now' , so sending you a warm virtual hug at 150km/h 🤗💖"},
+ {img:"https://i.postimg.cc/xCnvgkDF/similing_Aloooo.jpg", line:"Warning: Aaalu's happiness increased when you tapped this 😄💚"},
+ {img:"https://i.postimg.cc/CKjG0MLn/harman_9.jpg", line:"Your friend is 110% pagal about our friendship 🤪💚"},
+ {img:"https://i.postimg.cc/Nf0jmRLQ/you_matter_bohoooot.jpg", line:"Dil di vibe keh rahi: You matter..... oh v bohooooot shaaara 🌿💛"},
+ {img:"https://i.postimg.cc/MpH3zQhT/Harman_4.jpg", line:"Iss saal ne ik cheez sikhayi- You're really really special to me 🩵✨"},
+ {img:"https://i.postimg.cc/mkSpgNLt/Harman_3.jpg", line:"Your smile is the real gift here. Always keep it 😊🎀"},
+ {img:"https://i.postimg.cc/d0dB0mnq/Harman_6.jpg", line:"I hope this surprise made your day a little better 🌸💖"},
+ {img:"https://i.postimg.cc/SRXLw6nD/hrmn_15.jpg", line:"The world is softer and brighter with you in it ✨💙"},
+ {img:"https://i.postimg.cc/4y4bBCGy/Harman_7.jpg", line:"Thank you for being such a sweet, grounded, positive person 🌿🤍"},
+ {img:"https://i.postimg.cc/W1qm96B4/Harman_8.jpg", line:"You're strong, kind, caring.... and that's rare, stay like that 🌸💛"},
+ {img:"https://i.postimg.cc/C5wJXBj6/harman_4.jpg", line:"A little surprise...... for a person who truly deserves it 🎁💖"},
+ {img:"https://i.postimg.cc/d0dB0mnq/Harman_6.jpg", line:"You are someone who deserves all the lovely things in life ✨🤗"},
+ {img:"https://i.postimg.cc/d1jghKnZ/my_photo.jpg", line:"And here's the SPECIAL GIFT, as per your jnaab mdm ji 💛🎀"}
 ];
 
-let images = JSON.parse(localStorage.getItem('giftImages')) || Array(15).fill("");
-let activeGifts = Array(15).fill(true);
+const giftsDiv = document.getElementById("gifts");
+const display = document.getElementById("display");
+const displayImg = document.getElementById("displayImg");
+const lineDiv = document.getElementById("line");
+const returnBtn = document.getElementById("returnBtn");
 
-const giftsDiv=document.getElementById('gifts');
+let activeIndex = null;
 
-function randomPos(){
-    return {
-        top: Math.random()*80 + 5,
-        left: Math.random()*80 + 5
+/* Non-overlapping random positions (grid shuffle) */
+const positions = [];
+for(let r=10;r<=80;r+=20){
+  for(let c=10;c<=80;c+=20){
+    positions.push({top:r,left:c});
+  }
+}
+positions.sort(()=>Math.random()-0.5);
+
+/* Render gifts */
+giftsData.forEach((gift,i)=>{
+    const g = document.createElement("div");
+    g.className="gift";
+    g.textContent="🎁";
+    g.style.top = positions[i].top+"%";
+    g.style.left = positions[i].left+"%";
+
+    g.onclick = ()=>{
+        activeIndex = i;
+        display.style.display="flex";
+        displayImg.src = gift.img;
+        lineDiv.textContent = gift.line;
+        returnBtn.style.display="block";
+        g.style.display="none";
     };
-}
+    giftsDiv.appendChild(g);
+});
 
-function renderGifts(){
-    giftsDiv.innerHTML="";
-    lines.forEach((_,i)=>{
-        if(activeGifts[i]){
-            const d=document.createElement('div');
-            d.className='gift';
-            d.textContent='🎁';
-            const pos=randomPos();
-            d.style.top=pos.top+'%';
-            d.style.left=pos.left+'%';
-            d.onclick=()=>openGift(i);
-            giftsDiv.appendChild(d);
-        }
-    });
-}
-
-function openGift(i){
-    document.getElementById('display').style.display='flex';
-    document.getElementById('line').textContent=lines[i];
-    document.getElementById('displayImg').src=images[i]||'';
-    activeGifts[i]=false;
-    renderGifts();
-}
-
-renderGifts();
-
-// Return button
-document.getElementById('returnBtn').onclick=()=>{
-    document.getElementById('display').style.display='none';
-};
-
-// Admin panel logic
-const adminBtn=document.getElementById('adminBtn');
-const adminPanel=document.getElementById('adminPanel');
-
-adminBtn.onclick=()=>{
-    const pass=prompt('Enter admin password');
-    if(pass==='bestieAccess123'){
-        adminPanel.classList.add('open');
-    }
-};
-
-const inputs=document.getElementById('inputs');
-inputs.innerHTML='';
-for(let i=0;i<15;i++){
-    const inp=document.createElement('input');
-    inp.placeholder=`Image URL for Gift ${i+1}`;
-    inp.value=images[i];
-    inputs.appendChild(inp);
-}
-
-// Save images
-document.querySelector('.saveBtn').onclick=()=>{
-    const vals=[...inputs.children].map(i=>i.value);
-    images=vals;
-    localStorage.setItem('giftImages',JSON.stringify(images));
-    alert('Changes saved successfully 💾');
-};
-
-// Close panel
-document.querySelector('.closeBtn').onclick=()=>{
-    adminPanel.classList.remove('open');
+/* Return button */
+returnBtn.onclick = ()=>{
+    display.style.display="none";
+    returnBtn.style.display="none";
 };
 </script>
 
